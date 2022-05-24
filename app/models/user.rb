@@ -7,6 +7,10 @@ class User < ApplicationRecord
   has_many :books, dependent: :destroy
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
+  has_many :relationships, foreign_key: :follower_id, dependent: :destroy
+  has_many :followers, through: :relationships, source: :followed
+  has_many :reverse_of_relationships, class_name: 'Relationship', foreign_key: :followed_id, dependent: :destroy
+  has_many :followeds, through: :reverse_of_relationships, source: :follower
   has_one_attached :profile_image
 
 
@@ -19,4 +23,9 @@ class User < ApplicationRecord
   def get_profile_image
     (profile_image.attached?) ? profile_image : 'no_image.jpg'
   end
+
+  def is_followed_by?(user)
+    reverse_of_relationships.find_by(follower_id: user.id). present?
+  end
+
 end

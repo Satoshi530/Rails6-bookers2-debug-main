@@ -9,9 +9,18 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all
-    @user = current_user
     @book = Book.new
     @books = Book.all
+  end
+
+  def followers
+    user = User.find(params[:id])
+    @users = user.followers
+  end
+
+  def followeds
+    user = User.find(params[:id])
+    @users = user.followeds
   end
 
   def edit
