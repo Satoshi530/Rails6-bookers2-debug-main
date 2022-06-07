@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'messages/create'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   root to: "homes#top"
@@ -17,6 +18,8 @@ Rails.application.routes.draw do
     resource :favorites, only: [:create, :destroy]
 
   end
+  resources :messages, only: [:create]
+  resources :rooms, only: [:create, :index, :show]
 
 
 

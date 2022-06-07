@@ -1,0 +1,13 @@
+<div class="left-button">
+  <%= link_to "ユーザー一覧に戻る", "/users/index",class:"edit-link" %>
+</div>
+<% @entries.each do |e| %>
+<h4<%= e.user.name %>>さんとのチャット</h4>
+<% end %>
+<div class="posts">
+  <%= form_for @message do |f| %>
+    <%= f.text_field :body, placeholder: "メッセージを入力してください", size: 70, class:"form-texzt-field" %>
+      <%= f.hidden_field :room_id, value: @room.id %>
+        <%= f.submit "投稿", class: 'form-submit' %>
+      <% end %>
+</div>
