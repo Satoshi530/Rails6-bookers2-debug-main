@@ -13,7 +13,8 @@ class User < ApplicationRecord
   has_many :followers, through: :reverse_of_relationships, source: :follower
   has_many :entries, dependent: :destroy
   has_many :messages, dependent: :destroy
-  
+  has_many :rooms, through: :entries
+
   has_one_attached :profile_image
 
 
@@ -28,11 +29,11 @@ class User < ApplicationRecord
   end
 
   def follow(user)
-    relationships.create(followed_id :user.id)
+    relationships.create(followed_id: user.id)
   end
 
   def unfollow(user)
-    relationships.find_by(followed_id :user.id).destroy
+    relationships.find_by(followed_id: user.id).destroy
   end
 
   def following?(user)
@@ -42,14 +43,14 @@ class User < ApplicationRecord
   def self.looks(search, word)
     if search == "perfect_match"
       @user = User.where("name LIKE?", "#{word}")
-      elsif search == "forward_match"
+    elsif search == "forward_match"
         @user = User.where("name LIKE?", "%#{word}%")
-      elsif search == "backward_match"
+    elsif search == "backward_match"
         @user = User.where("name LIKE?", "%#{word}%")
-      elsif search == "partial_match"
+    elsif search == "partial_match"
         @user = User.where("name LIKE?", "%#{word}%")
-      else
+    else
         @user = User.all
-      end
+    end
   end
 end

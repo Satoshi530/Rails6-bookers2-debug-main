@@ -4,11 +4,13 @@ class BooksController < ApplicationController
     @book = Book.find(params[:id])
     @user = @book.user
     @books = Book.new
+    @genres = Genre.all
+    @book_genres = @book.genres
     @book_comment = BookComment.new
 
   end
 
-   def index
+  def index
     to  = Time.current.at_end_of_day
     from  = (to - 6.day).at_beginning_of_day
     @books = Book.all.sort {|a,b|
@@ -16,13 +18,16 @@ class BooksController < ApplicationController
       a.favorites.where(created_at: from...to).size
     }
     @book = Book.new
+    @genres = Genre.all
     @book_comment = BookComment.new
   end
 
   def create
     @book = Book.new(book_params)
     @book.user_id = current_user.id
+    genre_list = params[:book][:genre_name].split(',')
     if @book.save
+       @book.save_genres(genre_list)
       redirect_to book_path(@book), notice: "You have created book successfully."
     else
       @books = Book.all
@@ -57,6 +62,6 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:title, :body)
+    params.require(:book).permit(:title, :body, :genre_id, :rate)
   end
 end

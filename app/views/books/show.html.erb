@@ -8,31 +8,58 @@
     </div>
     <div class='col-md-8 offset-md-1'>
   		<h2>Book detail</h2>
-  		  <table class='table'>
-  		    <tr>
-            <td><%= link_to (@book.user) do %>
-              <%= image_tag @book.user.get_profile_image, size:"100x100" %><br>
-              <%= @book.user.name %>
-              <% end %>
-            </td>
-          <td><%= link_to @book.title, @book %></td>
-          <td><%= @book.body %></td>
-          <td id="favorite_buttons_<%= @book.id %>">
-          <%= render "favorites/favorites", book: @book %>
+		  <table class='table'>
+		    <tr>
+          <td><%= link_to (@book.user) do %>
+            <%= image_tag @book.user.get_profile_image, size:"100x100" %><br>
+            <%= @book.user.name %>
+            <% end %>
           </td>
-          <td>コメント数:<%= @book.book_comments.count %></td>
-            <% if @book.user == current_user %>
-              <td><%= link_to 'Edit', edit_book_path(@book), class: "btn btn-sm btn-success edit_book_#{@book.id}" %></td>
-              <td><%= link_to 'Destroy', @book, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%></td>
-             <% end %>
-          </tr>
-        </table>
+          <td><%= link_to @book.title, @book %></td>
+          <td>
+            <%= @book.body %>
+          </td>
+          <td>
+            <% @book.genres.each do |genre| %>
+              <%= genre.name %>
+            <% end %>
+          </td>
+          <td>
+            <div class="relative-book-rate">
+              <span>評価：</span>
+              <span id="star-rate-<%= @book.id %>"></span>
+              <script>
+                $('#star-rate-<%= @book.id %>').raty({
+                  size: 36,
+                  starOff: "<%= asset_path('star-off.png') %>",
+                  starOn: "<%= asset_path('star-on.png') %>",
+                  starHalf: "<%= asset_path('star-half.png') %>",
+                  half: true,   # 星半分表示
+                  readOnly: true,   # 読み取り専用
+                  score: <%= @book.rate %>,   # 星評価の表示
+                });
+              </script>
+              <%= @book.rate %>
+            </div>
+          </td>
+          <td id="favorite_buttons_<%= @book.id %>">
+            <%= render "favorites/favorites", book: @book %>
+          </td>
+          <td>
+            コメント数:<%= @book.book_comments.count %>
+          </td>
+           <% if @book.user == current_user %>
+            <td><%= link_to 'Edit', edit_book_path(@book), class: "btn btn-sm btn-success edit_book_#{@book.id}" %></td>
+            <td><%= link_to 'Destroy', @book, method: :delete, data: { confirm: '本当に消しますか？' }, class: "btn btn-sm btn-danger destroy_book_#{@book.id}"%></td>
+           <% end %>
+        </tr>
+      </table>
       <div id="comments_area">
         <%= render "book_comments/index", book: @book %>
       </div>
       <div class="new-comment">
-     <%= render "book_comments/form", book: @book, book_comment: @book_comment %>
+       <%= render "book_comments/form", book: @book, book_comment: @book_comment %>
+      </div>
     </div>
   </div>
-</div>
 </div>
